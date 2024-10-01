@@ -14,7 +14,7 @@ app.use(cors());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Yuweiyuan0.',
+    password: '138738232',
     database: 'crowdfunding_db'
 });
 
