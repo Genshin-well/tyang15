@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            background-color: #0056b3;
+            color: white;
+            padding: 15px 0;
+            border-radius: 8px;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        section {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #username {
+            font-weight: bold;
+            color: #17a2b8;
+        }
+        .fundraiser-item {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 0;
+        }
+        .fundraiser-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to the Non-Profit Donation Platform</h1>
+    <p>Your support makes a difference!</p>
+    <p>Logged in as: <span id="username">tyang15</span></p>
+    <nav>
+        <a href="index.html">Homepage</a>
+        <a href="search.html">Explore Fundraisers</a>
+    </nav>
+</header>
+
+<section id="fundraisers">
+    <h2>Ongoing Fundraisers</h2>
+    <div id="fundraiserList"></div>
+</section>
+
+<script>
+    function fetchFundraisers() {
+        fetch('http://localhost:3000/fundraisers')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('fundraiserList');
+                list.innerHTML = ''; // Clear list to avoid duplicates
+
+                data.forEach(fundraiser => {
+                    const item = document.createElement('div');
+                    item.className = 'fundraiser-item';
+                    item.innerHTML = `
+                        <strong>${fundraiser.CAPTION}</strong><br>
+                        Organized by: ${fundraiser.ORGANIZER}<br>
+                        Status: ${fundraiser.ACTIVE ? 'Active' : 'Inactive'}<br>
+                        Category: ${getCategoryName(fundraiser.CATEGORY_ID)}<br>
+                        Funding Goal: ${fundraiser.TARGET_FUNDING} AUD<br>
+                        Amount Raised: ${fundraiser.CURRENT_FUNDING} AUD<br>
+                        Location: ${fundraiser.CITY}<br>
+                        <a href="fundraiser.html?id=${fundraiser.FUNDRAISER_ID}">More Info</a>
+                    `;
+                    list.appendChild(item);
+                });
+            })
+            .catch(error => console.error('Error fetching fundraisers:', error));
+    }
+
+    const getCategoryName = (categoryId) => {
+        const categories = { 1: 'Technology', 2: 'Environment', 3: 'Arts & Culture' };
+        return categories[categoryId] || 'undefined';
+    };
+
+    // Initialize fetching of fundraisers
+    fetchFundraisers();
+</script>
+
+</body>
+</html>
